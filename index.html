@@ -139,18 +139,6 @@
                 Real-time C-MAT-2.1 Metric Visualization
             </h2>
 
-            <!-- Selector for the "STL" Model -->
-            <div class="flex justify-center mb-6">
-                <div class="w-full sm:w-80">
-                    <label for="model-selector" class="block text-sm font-medium text-gray-300 text-left mb-1">Select Data Model Type (Simulated STL)</label>
-                    <select id="model-selector" onchange="loadGeometry(this.value)" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 border bg-gray-700 text-white">
-                        <option value="torusKnot">Torus Knot (Relational Complexity)</option>
-                        <option value="icosahedron">Icosahedron (Decision Tree Purity)</option>
-                        <option value="dodecahedron">Dodecahedron (Emotional State Vector)</option>
-                    </select>
-                </div>
-            </div>
-
             <p class="text-lg font-light text-gray-400 mb-8">
                 Monitoring the complexity of the Compatibility Matrix in three dimensions.
                 <br class="hidden sm:inline"> (Click and drag to rotate the relational dataset.)
