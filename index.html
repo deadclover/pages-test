@@ -42,9 +42,80 @@
                 We are a data-driven, results-focused consultancy dedicated to the systematic
                 **Acquisition, Alignment, and Retention** of ideal romantic partnerships for our Principal Candidate.
             </p>
-            <button class="mt-10 bg-white text-indigo-700 hover:bg-gray-100 font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.02]">
+            <!-- Updated CTA to link to the new Intake Form section -->
+            <a href="#intake" class="inline-block mt-10 bg-white text-indigo-700 hover:bg-gray-100 font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.02]">
                 Initiate Match Protocol
-            </button>
+            </a>
+        </div>
+    </section>
+
+    <!-- Intake Form Section: The Confidential Pre-Vetting Application -->
+    <section id="intake" class="py-16 md:py-24 bg-gray-50 border-b border-gray-200">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center mb-4">
+                Confidential Pre-Vetting Application (CPA)
+            </h2>
+            <p class="text-center text-gray-500 mb-12">
+                All data is highly sensitive and utilized solely for compatibility analysis (C-MAT-2.1). Completion of all fields is mandatory.
+            </p>
+
+            <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl border border-indigo-100">
+                <form onsubmit="event.preventDefault(); document.getElementById('form-success').classList.remove('hidden'); this.reset();" class="space-y-6">
+
+                    <!-- Success Message (appears on submission) -->
+                    <div id="form-success" class="hidden p-4 mb-4 text-sm text-teal-800 rounded-lg bg-teal-50 border border-teal-200" role="alert">
+                        <span class="font-medium">Application Received:</span> Your data has been successfully ingested into the Compatibility Matrix. Awaiting analytical output.
+                    </div>
+                    
+                    <!-- Field 1: Name/Contact (Standard) -->
+                    <div>
+                        <label for="full-name" class="block text-sm font-medium text-gray-700">Client ID (Full Legal Name)</label>
+                        <!-- Added block w-full for full-width styling consistency -->
+                        <input type="text" id="full-name" required placeholder="Full name as per official documentation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 border">
+                    </div>
+
+                    <!-- Field 2: Emotional Status (Absurd Dropdown) -->
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Current Romantic Vector Status</label>
+                        <select id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 border bg-white">
+                            <option value="">-- Select Alignment State --</option>
+                            <option value="unoptimized">Unoptimized/Negative Churn Rate</option>
+                            <option value="pre-acquisition">Pre-Acquisition Phase (Actively Seeking)</option>
+                            <option value="legacy">Legacy Partnership (Seeking Transition Analysis)</option>
+                            <option value="solo-optimal">Solo-Optimal (Requires Re-Calibration)</option>
+                        </select>
+                    </div>
+
+                    <!-- Field 3: Toast Setting (Specific, Irrelevant Input) -->
+                    <div>
+                        <label for="toast-setting" class="block text-sm font-medium text-gray-700">Optimal Morning Carbohydrate Preparation Setting (1.0 to 9.0)</label>
+                        <input type="number" id="toast-setting" min="1.0" max="9.0" step="0.1" required placeholder="Recommended: 3.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 border">
+                        <p class="mt-1 text-xs text-gray-500">Note: This metric is crucial for early-morning resource utilization forecasting.</p>
+                    </div>
+
+                    <!-- Field 4: Conflict Protocol (Absurd Textarea) -->
+                    <div>
+                        <label for="protocol" class="block text-sm font-medium text-gray-700">Detailed Conflict De-escalation Protocol (Minimum 250 characters)</label>
+                        <textarea id="protocol" rows="4" required minlength="250" placeholder="Describe the steps for de-escalation, including acceptable timeframes for re-engagement." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 border"></textarea>
+                    </div>
+
+                    <!-- Field 5: Compliance Check (Absurd Checkbox) -->
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="compliance" name="compliance" type="checkbox" required class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="compliance" class="font-medium text-gray-700">I confirm that all artisanal toast-making capabilities have been validated by an independent party.</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                            Submit Data for Processing
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
@@ -179,9 +250,10 @@
             <p class="text-gray-400 mb-8">
                 If you meet the C-MAT-2.1 criteria, submit your confidential pre-vetting application.
             </p>
-            <button class="bg-teal-500 hover:bg-teal-600 text-gray-900 font-bold py-3 px-10 rounded-lg shadow-2xl transition duration-300 transform hover:scale-[1.05]">
+            <!-- Updated CTA to link to the form section -->
+            <a href="#intake" class="inline-block bg-teal-500 hover:bg-teal-600 text-gray-900 font-bold py-3 px-10 rounded-lg shadow-2xl transition duration-300 transform hover:scale-[1.05]">
                 SUBMIT PRE-VETTING APPLICATION
-            </button>
+            </a>
             <p class="mt-10 text-sm text-gray-600">
                 &copy; 2025 The Affection Alignment Institute (AAI). All Rights Reserved. Emotional data is secured.
             </p>
