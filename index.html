@@ -7,8 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 3D Library for Visualization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include STLLoader.js: This is the critical utility for loading .stl files -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f7f9fb; /* Light off-white background */
@@ -138,6 +140,9 @@
             <h2 class="text-3xl sm:text-4xl font-bold mb-4">
                 Real-time C-MAT-2.1 Metric Visualization
             </h2>
+            <div id="loading-message" class="text-sm text-yellow-400 mb-2">Loading Model...</div>
+            
+            <!-- Removed the model selector as requested -->
 
             <p class="text-lg font-light text-gray-400 mb-8">
                 Monitoring the complexity of the Compatibility Matrix in three dimensions.
@@ -305,12 +310,16 @@
 
         window.onload = function () {
             const container = document.getElementById('three-container');
+            const loadingMessage = document.getElementById('loading-message');
             if (!container) return;
 
             let scene, camera, renderer, object;
             let isDragging = false;
             let previousMousePosition = { x: 0, y: 0 };
+            
+            // Define factory functions for built-in geometries (used as fallback/alternatives)
             const geometryParameters = {
+                // If a real STL fails to load, we fall back to this TorusKnot
                 torusKnot: () => new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
                 icosahedron: () => new THREE.IcosahedronGeometry(1.5, 0),
                 dodecahedron: () => new THREE.DodecahedronGeometry(1.5, 0)
@@ -342,8 +351,8 @@
                 pointLight.position.set(10, 10, 10);
                 scene.add(pointLight);
 
-                // Initial load
-                loadGeometry('https://raw.githubusercontent.com/deadclover/pages-test/refs/heads/main/stl/helpless_survivor3_old_man.stl');
+                // Initial load: Directly load the single, specified STL model
+                loadModel();
 
                 // Event Listeners for Interaction
                 renderer.domElement.addEventListener('mousedown', onMouseDown, false);
@@ -358,36 +367,92 @@
                 animate();
             }
             
-            // Global function accessible from HTML select
-            window.loadGeometry = function(type) {
+            /**
+             * Cleans up the previous 3D object from the scene.
+             */
+            function cleanupObject() {
                 if (object) {
-                    // Remove old object from scene
                     scene.remove(object);
-                    // Dispose of geometry and material to free up memory
-                    object.geometry.dispose();
-                    object.material.dispose();
+                    if (object.geometry) object.geometry.dispose();
+                    if (object.material) object.material.dispose();
+                    object = null;
                 }
+            }
 
-                const geometryFactory = geometryParameters[type];
-                if (!geometryFactory) return;
+            /**
+             * Creates and adds a mesh to the scene using a provided geometry.
+             * @param {THREE.BufferGeometry} geometry - The geometry (e.g., from STLLoader or built-in).
+             */
+            function createMesh(geometry) {
+                // Center the geometry
+                geometry.computeBoundingBox();
+                const center = geometry.boundingBox.getCenter(new THREE.Vector3());
+                geometry.translate(-center.x, -center.y, -center.z);
 
-                const geometry = geometryFactory();
-                
-                // Sci-fi/Corporate look with a wireframe material
-                const material = new THREE.MeshPhongMaterial({ 
+                // Create a glossy, metallic material for a high-tech look
+                const material = new THREE.MeshStandardMaterial({ 
                     color: 0x10b981, // Tailwind teal-500
-                    wireframe: true,
-                    emissive: 0x065f46 // Dark teal glow
+                    roughness: 0.2,
+                    metalness: 0.8,
+                    wireframe: false
                 });
                 
+                // Create the mesh
                 object = new THREE.Mesh(geometry, material);
                 
                 // Apply stored rotation values to the new object
                 object.rotation.x = rotationX;
                 object.rotation.y = rotationY;
+                
+                // Scale STL files down if they are too large (typical issue with STL imports)
+                const size = geometry.boundingBox.max.distanceTo(geometry.boundingBox.min);
+                if (size > 5) {
+                    object.scale.set(0.1, 0.1, 0.1);
+                }
 
                 scene.add(object);
+                loadingMessage.classList.add('hidden');
             }
+
+            /**
+             * Loads the specified STL file from the external URL.
+             */
+            window.loadModel = function() {
+                cleanupObject();
+                
+                // The specific STL URL requested by the user
+                const stlUrl = 'https://raw.githubusercontent.com/deadclover/pages-test/refs/heads/main/stl/helpless_survivor3_old_man.stl'; 
+                loadingMessage.textContent = `Attempting to load STL model from external URL...`;
+                loadingMessage.classList.remove('hidden');
+                console.log(`Attempting to load STL file from URL: ${stlUrl}`);
+                
+                const loader = new THREE.STLLoader();
+
+                // The loader attempts an HTTP GET request to this URL.
+                loader.load(
+                    stlUrl,
+                    // Success Callback: Fired if the STL file loads successfully
+                    function (geometry) {
+                        console.log(`STL file loaded successfully from ${stlUrl}.`);
+                        createMesh(geometry);
+                    },
+                    // Progress Callback 
+                    function (xhr) {
+                        // Display progress to the user
+                        const percent = Math.floor((xhr.loaded / xhr.total * 100));
+                        loadingMessage.textContent = `Downloading STL: ${percent}% complete...`;
+                    },
+                    // Error Callback: Fired if the STL file fails to load (likely due to CORS or 404)
+                    function (error) {
+                        console.error(`Failed to load STL file from ${stlUrl}. Falling back to default geometry.`, error);
+                        // Fallback to a complex built-in geometry (Torus Knot)
+                        const fallbackGeometry = geometryParameters.torusKnot();
+                        createMesh(fallbackGeometry);
+                        loadingMessage.textContent = 'STL URL load failed (CORS/404). Showing fallback geometry.';
+                    }
+                );
+            }
+
 
             function onWindowResize() {
                 const width = container.clientWidth;
@@ -404,7 +469,7 @@
             }
 
             function onMouseMove(event) {
-                if (!isDragging) return;
+                if (!isDragging || !object) return;
                 
                 const deltaX = event.clientX - previousMousePosition.x;
                 const deltaY = event.clientY - previousMousePosition.y;
@@ -433,7 +498,7 @@
 
             function onTouchMove(event) {
                 event.preventDefault();
-                if (!isDragging) return;
+                if (!isDragging || !object) return;
 
                 const deltaX = event.touches[0].clientX - previousMousePosition.x;
                 const deltaY = event.touches[0].clientY - previousMousePosition.y;
